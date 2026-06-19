@@ -1,18 +1,19 @@
-### cs32x-dev/utils/grab32.py - VERSION 20260618rm 
+### cs32x-dev/utils/grab32.py - VERSION 20260619
 """
-This script simplifies the work a CS32x learner must do to grab
-the files needed for a course unit, which are stored in a public
-GitHub repository.
+This script simplifies the work a learner in one of my classes
+must do to grab the files needed for a course unit, which are
+stored in a public GitHub repository.
 
 If a learner wants the files for `m04b`, they'd run this script in
-the `cs32x` codespace as follows:
+the course codespace as follows:
 
 $ python3 grab32.py m04b
 
 The input parameter (i.e., `m04b` in this example) should match the
-name of a public `cs32x` GitHub repo.  The script will place this unit's
-files in the `m04` subdirectory of the user's codespace, where `m04`
-stands for the course's Module 4.
+name of a public GitHub repo for this course.  The script will place
+this unit's files in the `m04` subdirectory of the user's codespace,
+where `m04` stands for the course's Module 4 and `b` is the module's
+second shard.
 
 If a subdirectory of the same name already exists, this script assumes
 that the user wants a new clean copy of the repo's files.  It will name
@@ -27,10 +28,9 @@ import subprocess
 import sys
 import zipfile
 
-# Global constants and configuration parameters
-ORG_URL = 'https://github.com/cs32x/'
-MAIN_ZIP_PATH = '/archive/refs/heads/main.zip'
-CODESPACES_ROOT = '/workspaces/cs32x'
+# Course-specific global constants and configuration parameters
+COURSE_NUM = '32'
+COURSE_NAME = f'cs{COURSE_NUM}x'
 
 VALID_REPOS = ['m01'] \
     + [f'm02{p}' for p in 'abcdefg'] \
@@ -38,6 +38,11 @@ VALID_REPOS = ['m01'] \
     + [f'm04{p}' for p in 'abcde'] \
     + ['m05'] \
     + [f'm07{p}' for p in 'abcdefghi']
+
+# Global constants and configuration parameters
+ORG_URL = f'https://github.com/{COURSE_NAME}/'
+CODESPACES_ROOT = f'/workspaces/{COURSE_NAME}'
+MAIN_ZIP_PATH = '/archive/refs/heads/main.zip'
 
 
 def validate_working_dir():
@@ -169,7 +174,7 @@ def move_files(repo, module):
 def main():
     # Check usage and grab the repo name
     if len(sys.argv) != 2:
-        sys.exit("Usage: python3 grab32.py REPO")
+        sys.exit(f"Usage: python3 grab{COURSE_NUM}.py REPO")
 
     repo = sys.argv[1]
 
@@ -178,7 +183,7 @@ def main():
         sys.exit(f"ERROR: {repo} is not valid; did you mistype it?")
 
     # Start alerting the user to our progress
-    print(f"STARTING grab32.py ...")
+    print(f"STARTING grab{COURSE_NUM}.py ...")
 
     # Make sure the script is in CODESPACES_ROOT
     codespace_path = validate_working_dir()
@@ -193,7 +198,7 @@ def main():
     move_files(repo, module)
 
     # Alert the user that we're done
-    print(f"grab32.py COMPLETE")
+    print(f"grab{COURSE_NUM}.py COMPLETE")
     print()
     print(f"To run a script in {module}, make sure to put yourself")
     print(f"in that directory by executing: cd {module}")
